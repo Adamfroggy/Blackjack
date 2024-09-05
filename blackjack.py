@@ -40,7 +40,8 @@ class Deck:
     """
     def __init__(self):
         """
-        Initializes a deck with 52 cards, one for each combination of rank and suit.
+        Initializes a deck with 52 cards, one for each combination
+        of rank and suit.
         """
         self.cards = []
         suits = ["Spades", "Clubs", "Hearts", "Diamondes"]
@@ -135,13 +136,33 @@ class Hand:
             self.value -= 10
 
     def get_value(self):
+        """
+        Returns the current value of the hand after recalculating.
+
+        Returns:
+            int: The total value of the hand.
+        """
         self.calculate_value()
         return self.value
 
     def is_blackjack(self):
+        """
+        Checks if the hand is a blackjack (total value of 21 with two cards).
+
+        Returns:
+            bool: True if the hand is a blackjack, False otherwise.
+        """
         return self.get_value() == 21
 
     def display(self, show_all_dealer_cards=False):
+        """
+        Displays the hand's cards and value.
+        The dealer's first card can be hidden.
+
+        Args:
+            show_all_dealer_cards (bool): If False,
+            the dealer's first card is hidden.
+        """
         print(f'''{"Dealer's" if self.dealer else "Your"} hand:''')
         for index, card in enumerate(self.card):
             if index == 0 and self.dealer and not show_all_dealer_cards \
@@ -156,10 +177,22 @@ class Hand:
 
 
 class Game:
+    """
+    A class representing a game of Blackjack.
+
+    Methods:
+        play(): Starts and plays the specified number of Blackjack games.
+        check_winner(): Checks the winner based on hand values and conditions.
+    """
     def play(self):
+        """
+        Starts and plays a series of Blackjack games based on user input.
+        Handles the game loop, dealing cards, and checking for winners.
+        """
         game_number = 0
         games_to_play = 0
 
+        # Ask the player how many games they want to play
         while games_to_play <= 0:
             try:
                 games_to_play = int(input
@@ -167,6 +200,7 @@ class Game:
             except:
                 print("You must enter a number.")
 
+        # Game loop
         while game_number < games_to_play:
             game_number += 1
 
@@ -176,6 +210,7 @@ class Game:
             player_hand = Hand()
             dealer_hand = Hand(dealer=True)
 
+            # Deal initial two cards to both player and dealer
             for i in range(2):
                 player_hand.add_card(deck.deal(1))
                 dealer_hand.add_card(deck.deal(1))
@@ -184,12 +219,15 @@ class Game:
             print("*" * 30)
             print(f"Game {game_number} of {games_to_play}")
             print("*" * 30)
+            # Display hands
             player_hand.display()
             dealer_hand.display()
 
+            # Check for an initial winner (blackjack or bust)
             if self.check_winner(player_hand, dealer_hand):
                 continue
-
+            
+            # Player's turn: Hit or Stay
             choice = ""
             while player_hand.get_value() < 21 and choice not in ["s", "stay"]:
                 choice = input("Please choose 'Hit' or 'Stay': ").lower()
@@ -202,12 +240,14 @@ class Game:
                     player_hand.add_card(deck.deal(1))
                     player_hand.display()
 
+            # Check for winner after player's turn  
             if self.check_winner(player_hand, dealer_hand):
                 continue
 
             player_hand_value = player_hand.get_value()
             dealer_hand_value = dealer_hand.get_value()
 
+            # Dealer's turn
             while dealer_hand.get_value() < 17:
                 dealer_hand.add_card(deck.deal(1))
 
@@ -216,6 +256,7 @@ class Game:
             if self.check_winner(player_hand, dealer_hand, game_over=True):
                 continue
 
+            # Final result
             print("End Results...")
             print("Your hand:", player_hand_value)
             print("Dealers hand:", dealer_hand_value)
@@ -223,6 +264,20 @@ class Game:
         print("\nThanks for playing!")
 
     def check_winner(self, player_hand, dealer_hand, game_over=False):
+        """
+        Checks the winner based on the current value of the player's and
+        dealer's hands.
+
+        Args:
+            player_hand (Hand): The player's hand object.
+            dealer_hand (Hand): The dealer's hand object.
+            game_over (bool): If True, checks the final winner. If False,
+            checks for blackjack or bust.
+
+        Returns:
+            bool: True if the game has ended (due to bust, blackjack, or
+            comparison of values).
+        """
         # Check conditions before the game is over (busts or blackjack)
         if not game_over:
             if player_hand.get_value() > 21:
@@ -259,7 +314,6 @@ class Game:
                 print("Dealer wins.")
             return True
         return False
-
 
 
 g = Game()
