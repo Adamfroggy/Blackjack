@@ -197,7 +197,7 @@ class Game:
             try:
                 games_to_play = int(input
                                     ("How many games do you want to play? "))
-            except:
+            except ValueError:
                 print("You must enter a number.")
 
         # Game loop
