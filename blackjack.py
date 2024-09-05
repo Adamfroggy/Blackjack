@@ -226,7 +226,7 @@ class Game:
             # Check for an initial winner (blackjack or bust)
             if self.check_winner(player_hand, dealer_hand):
                 continue
-            
+
             # Player's turn: Hit or Stay
             choice = ""
             while player_hand.get_value() < 21 and choice not in ["s", "stay"]:
@@ -240,7 +240,7 @@ class Game:
                     player_hand.add_card(deck.deal(1))
                     player_hand.display()
 
-            # Check for winner after player's turn  
+            # Check for winner after player's turn
             if self.check_winner(player_hand, dealer_hand):
                 continue
 
